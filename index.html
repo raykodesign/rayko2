@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rayko Portfolio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="protected">
+
+    <h1 class="main-title" id="main-title">Rayko</h1>
+
+    <div class="gallery-container">
+        <div class="gallery-item" data-color="#ff0000" data-target="modal-1">
+            <div class="bg-image" style="background-image: url('img/foto1.jpg');"></div>
+            <div class="overlay-gradient"></div>
+            <div class="label">Connect</div>
+        </div>
+
+        <div class="gallery-item" data-color="#00f7ff" data-target="modal-2">
+            <div class="bg-image" style="background-image: url('img/foto2.jpg');"></div>
+            <div class="overlay-gradient"></div>
+            <div class="label">galery</div>
+        </div>
+
+        <div class="gallery-item" data-color="#ffffff" data-target="modal-3">
+            <div class="bg-image" style="background-image: url('img/foto3.jpg');"></div>
+            <div class="overlay-gradient"></div>
+            <div class="label">about me</div>
+        </div>
+
+        <div class="gallery-item" data-color="#ffaa00" data-target="modal-4">
+            <div class="bg-image" style="background-image: url('img/foto4.jpg');"></div>
+            <div class="overlay-gradient"></div>
+            <div class="label">friends</div>
+        </div>
+
+        <div class="gallery-item" data-color="#9d00ff" data-target="modal-5">
+            <div class="bg-image" style="background-image: url('img/foto5.jpg');"></div>
+            <div class="overlay-gradient"></div>
+            <div class="label">music</div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="modal-overlay">
+        <div class="close-area-click"></div>
+
+        <div class="modal-card" id="modal-1">
+            <div class="modal-content-wrapper">
+                <h2 class="popup-title">Connect</h2>
+                <div class="social-buttons-grid">
+                    <a href="https://instagram.com" target="_blank" class="social-btn instagram">
+                        <i class="fab fa-instagram"></i> <span>Instagram</span>
+                    </a>
+                    <a href="https://whatsapp.com" target="_blank" class="social-btn whatsapp">
+                        <i class="fab fa-whatsapp"></i> <span>WhatsApp</span>
+                    </a>
+                    <a href="mailto:email@ejemplo.com" class="social-btn email">
+                        <i class="fas fa-envelope"></i> <span>Email</span>
+                    </a>
+                    <a href="#" target="_blank" class="social-btn tiktok">
+                        <i class="fab fa-tiktok"></i> <span>TikTok</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal-card wide-card" id="modal-2">
+            <div class="modal-content-wrapper">
+                <h2 class="popup-title">Galery</h2>
+                <div class="gallery-3d-container" id="swipe-area">
+                    <div class="card-3d active"><img src="img/foto1.jpg" draggable="false"></div>
+                    <div class="card-3d next"><img src="img/foto2.jpg" draggable="false"></div>
+                    <div class="card-3d"><img src="img/foto3.jpg" draggable="false"></div>
+                    <div class="card-3d"><img src="img/foto1.jpg" draggable="false"></div>
+                    <div class="card-3d prev"><img src="img/foto2.jpg" draggable="false"></div>
+                </div>
+                <p class="hint-text">Desliza o arrastra</p>
+            </div>
+        </div>
+
+        <div class="modal-card" id="modal-3">
+            <div class="modal-content-wrapper">
+                <h2 class="popup-title">Rayko</h2>
+                <p class="minimal-text">
+                    Visual Designer & Code Architect.
+                </p>
+                <div class="profile-separator"></div>
+                
+                <ul class="profile-stats">
+                    <li>
+                        <span class="stat-icon"><i class="fas fa-birthday-cake"></i></span>
+                        <span class="stat-label">Cumpleaños:</span>
+                        <span class="stat-value">15 Agosto</span>
+                    </li>
+                    <li>
+                        <span class="stat-icon"><i class="fas fa-moon"></i></span>
+                        <span class="stat-label">Signo:</span>
+                        <span class="stat-value">Leo</span>
+                    </li>
+                    <li>
+                        <span class="stat-icon"><i class="fas fa-palette"></i></span>
+                        <span class="stat-label">Color Fav:</span>
+                        <span class="stat-value" style="color: #ff0000;">Rojo Sangre</span>
+                    </li>
+                    <li>
+                        <span class="stat-icon"><i class="fas fa-map-marker-alt"></i></span>
+                        <span class="stat-label">Ubicación:</span>
+                        <span class="stat-value">Trujillo PE</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="modal-card" id="modal-4">
+            <div class="modal-content-wrapper">
+                <h2 class="popup-title">Friends</h2>
+                <div class="friends-list">
+                    <a href="https://xat.me/xCallateLaJeta" target="_blank" class="friend-row">
+                        <div class="avatar-wrap">
+                            <img src="https://xatimg.com/image/2yD2OgmgNwIC.png" draggable="false">
+                            <div class="status-dot"></div>
+                        </div>
+                        <div class="friend-info">
+                            <span class="f-name">Misha</span>
+                            <span class="f-status">Online</span>
+                        </div>
+                        </a>
+                    <a href="https://xat.me/Faby" target="_blank" class="friend-row">
+                        <div class="avatar-wrap">
+                            <img src="https://xatimg.com/image/XsvkaLGi0Kfy.png" draggable="false">
+                            <div class="status-dot"></div>
+                        </div>
+                        <div class="friend-info">
+                            <span class="f-name">Faby</span>
+                            <span class="f-status">Online</span>
+                        </div>
+                        </a>
+                    <a href="https://xat.me/iLushoooooo1" target="_blank" class="friend-row">
+                        <div class="avatar-wrap">
+                            <img src="https://xatimg.com/image/1KdIw2uNwv1b.png" draggable="false">
+                            <div class="status-dot"></div>
+                        </div>
+                        <div class="friend-info">
+                            <span class="f-name">Lusho</span>
+                            <span class="f-status">Online</span>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal-card" id="modal-5">
+            <div class="modal-content-wrapper">
+                <h2 class="popup-title">Music</h2>
+                
+                <div class="goth-ultimate-player">
+                    
+                    <div class="disk-wrapper">
+                        <div class="aura-pulse"></div>
+                        <div class="vinyl-disk">
+                            <div class="vinyl-cover-art"></div> </div>
+                    </div>
+
+                    <div class="spectrum-visualizer">
+                        <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+                        <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+                        <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+                        <div class="bar"></div>
+                    </div>
+
+                    <div class="track-details-goth">
+                        <h3 id="t-name">Seleccionando...</h3>
+                        <p id="t-artist">Artistas</p>
+                    </div>
+
+                    <div class="progress-bar-container">
+                        <div class="progress-fill"></div>
+                    </div>
+
+                    <div class="controls-ultimate">
+                        <button id="p-prev" class="ctrl-btn small"><i class="fas fa-step-backward"></i></button>
+                        <button id="p-play" class="ctrl-btn main-orb"><i class="fas fa-play"></i></button>
+                        <button id="p-next" class="ctrl-btn small"><i class="fas fa-step-forward"></i></button>
+                    </div>
+
+                </div>
+
+                <audio id="audio-player" autoplay loop></audio>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
