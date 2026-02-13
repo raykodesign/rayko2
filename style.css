@@ -1,0 +1,739 @@
+/* =========================================
+   1. RESET Y CONFIGURACIÓN BASE
+   ========================================= */
+   * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #050505;
+    font-family: 'Montserrat', sans-serif;
+    height: 100vh;
+    overflow: hidden; /* Evita scroll en la página principal */
+    color: #fff;
+}
+
+/* --- SEGURIDAD Y PROTECCIÓN --- */
+body.protected {
+    user-select: none; /* No se puede seleccionar texto */
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+
+img {
+    -webkit-user-drag: none; /* No se puede arrastrar la imagen al escritorio */
+    user-drag: none;
+    pointer-events: none; /* Evita interacción directa para facilitar el swipe */
+}
+
+/* Excepciones para elementos interactivos */
+.avatar-wrap img { pointer-events: none; }
+.friend-row { pointer-events: auto; }
+.social-btn { pointer-events: auto; }
+
+/* =========================================
+   2. TÍTULO PRINCIPAL (RAYKO)
+   ========================================= */
+.main-title {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 50;
+    pointer-events: none; /* El mouse atraviesa el texto */
+    
+    font-family: 'Cinzel Decorative', cursive;
+    font-size: 5rem;
+    letter-spacing: 6px;
+    text-transform: uppercase;
+    
+    /* Variables dinámicas desde JS */
+    color: var(--dynamic-color, #fff);
+    text-shadow: 0 0 20px var(--dynamic-glow, rgba(255,255,255,0.2));
+    
+    transition: all 0.5s ease;
+}
+
+/* Efecto al pasar el mouse por una sección */
+body.hover-mode .main-title {
+    opacity: 0;
+    transform: translate(-50%, -60%) scale(1.05);
+    filter: blur(5px);
+}
+
+/* =========================================
+   3. ESTRUCTURA DE GALERÍA (FONDO)
+   ========================================= */
+.gallery-container {
+    display: flex;
+    width: 100%;
+    height: 100%;
+}
+
+.gallery-item {
+    position: relative;
+    flex: 1;
+    height: 100%;
+    cursor: pointer;
+    border-right: 1px solid rgba(255,255,255,0.05);
+    transition: flex 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+    overflow: hidden;
+}
+
+.bg-image {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    /* Estado inicial: Oscuro y B/N */
+    filter: grayscale(100%) brightness(0.4);
+    transform: scale(1);
+    transition: transform 0.8s ease, filter 0.6s ease;
+}
+
+.overlay-gradient {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 50%;
+    background: linear-gradient(to top, #000 0%, transparent 100%);
+    pointer-events: none;
+}
+
+.label {
+    position: absolute;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.7rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    font-weight: 600;
+    color: rgba(255,255,255,0.5);
+    transition: all 0.4s ease;
+}
+
+/* HOVER EN SECCIONES */
+.gallery-item:hover {
+    flex: 2.5; /* Se expande */
+}
+
+.gallery-item:hover .bg-image {
+    filter: grayscale(0%) brightness(1); /* Color y brillo */
+    transform: scale(1.05); /* Zoom suave */
+}
+
+.gallery-item:hover .label {
+    color: #fff;
+    bottom: 40px;
+    text-shadow: 0 0 8px rgba(255,255,255,0.8);
+}
+
+/* =========================================
+   4. SISTEMA DE POPUPS (MODALES)
+   ========================================= */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5); /* Fondo semitransparente */
+    backdrop-filter: blur(8px); /* Desenfoque elegante */
+    -webkit-backdrop-filter: blur(8px);
+    z-index: 100;
+    opacity: 0;
+    pointer-events: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: opacity 0.4s ease;
+}
+
+.modal-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* Área invisible para cerrar clickeando fuera */
+.close-area-click {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+/* TARJETA DEL POPUP */
+.modal-card {
+    position: relative;
+    z-index: 2;
+    background: rgba(10, 10, 10, 0.95); /* Fondo casi negro sólido */
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    
+    /* Borde brillante dinámico */
+    box-shadow: 0 0 0 1px var(--popup-color), 0 20px 50px rgba(0,0,0,0.8);
+    
+    border-radius: 20px;
+    padding: 35px;
+    width: 340px; /* Ancho estándar */
+    max-height: 90vh;
+    overflow-y: auto; /* Scroll si es muy alto */
+    text-align: center;
+    
+    transform: translateY(30px) scale(0.95);
+    transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+    display: none;
+}
+
+/* Ocultar scrollbar del modal */
+.modal-card::-webkit-scrollbar { width: 0px; }
+
+.modal-card.active-card {
+    display: block;
+    transform: translateY(0) scale(1);
+}
+
+.modal-card.wide-card {
+    width: 600px;
+    max-width: 90%;
+}
+
+.popup-title {
+    font-family: 'Cinzel Decorative', cursive;
+    font-size: 2rem;
+    color: #fff;
+    margin-bottom: 25px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    padding-bottom: 15px;
+    display: inline-block;
+    width: 100%;
+}
+
+.minimal-text {
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: #ccc;
+}
+
+/* =========================================
+   5. SECCIÓN 1: ENCUÉNTRAME (BOTONES)
+   ========================================= */
+.social-buttons-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.social-btn {
+    text-decoration: none;
+    color: #fff;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    padding: 15px;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.social-btn i {
+    font-size: 1.5rem;
+    transition: transform 0.3s;
+}
+
+.social-btn span {
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Hover Effects */
+.social-btn:hover {
+    transform: translateY(-3px);
+    border-color: var(--popup-color);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    background: rgba(255,255,255,0.08);
+}
+
+.social-btn:hover i {
+    transform: scale(1.2);
+    color: var(--popup-color);
+}
+
+/* =========================================
+   6. SECCIÓN 2: GALERÍA SWIPE (FULL COVER)
+   ========================================= */
+.gallery-3d-container {
+    position: relative;
+    width: 100%;
+    height: 350px;
+    perspective: 1000px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: grab; /* Manita abierta */
+    margin-bottom: 10px;
+}
+
+.gallery-3d-container:active {
+    cursor: grabbing; /* Manita cerrada */
+}
+
+.card-3d {
+    position: absolute;
+    width: 100%;
+    max-width: 280px; /* Tamaño de la carta */
+    height: 100%;
+    transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+    border-radius: 12px;
+    overflow: hidden;
+    background: #000;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    
+    /* Estado inicial: Oculto atrás */
+    opacity: 0;
+    transform: translateZ(-100px);
+}
+
+.card-3d img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* IMAGEN COMPLETA SIN BORDES */
+    display: block;
+}
+
+/* Estados de Animación */
+.card-3d.active {
+    opacity: 1;
+    z-index: 10;
+    transform: translateX(0) translateZ(0);
+    box-shadow: 0 5px 25px var(--popup-color);
+}
+
+.card-3d.prev {
+    opacity: 0.5;
+    z-index: 5;
+    transform: translateX(-60%) translateZ(-150px) rotateY(20deg);
+}
+
+.card-3d.next {
+    opacity: 0.5;
+    z-index: 5;
+    transform: translateX(60%) translateZ(-150px) rotateY(-20deg);
+}
+
+.hint-text {
+    font-size: 0.75rem;
+    color: #666;
+    margin-top: 15px;
+    letter-spacing: 1px;
+}
+
+/* =========================================
+   7. SECCIÓN 3: ABOUT ME (PERFIL DETALLADO)
+   ========================================= */
+.profile-separator {
+    width: 50%;
+    height: 1px;
+    background: rgba(255,255,255,0.1);
+    margin: 20px auto;
+}
+
+.profile-stats {
+    list-style: none;
+    text-align: left;
+    padding: 0 10px;
+}
+
+.profile-stats li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.profile-stats li:last-child {
+    border-bottom: none;
+}
+
+.stat-icon {
+    color: var(--popup-color);
+    width: 25px;
+    text-align: center;
+    font-size: 1.1rem;
+}
+
+.stat-label {
+    font-size: 0.9rem;
+    color: #aaa;
+    flex: 1;
+    margin-left: 15px;
+}
+
+.stat-value {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #fff;
+}
+
+/* =========================================
+   8. SECCIÓN 4: FRIENDS (CLEAN & CLICKABLE)
+   ========================================= */
+.friends-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.friend-row {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 12px;
+    border-radius: 12px;
+    text-decoration: none;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid transparent;
+    transition: all 0.3s;
+    pointer-events: auto; /* Permitir click */
+}
+
+.friend-row:hover {
+    background: rgba(255,255,255,0.08);
+    border-color: var(--popup-color);
+    transform: translateX(5px);
+}
+
+.avatar-wrap {
+    position: relative;
+    width: 45px;
+    height: 45px;
+}
+
+.avatar-wrap img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.status-dot {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: 2px solid #111;
+    background-color: var(--popup-color);
+    box-shadow: 0 0 5px var(--popup-color);
+}
+
+.f-name {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #fff;
+}
+
+.f-status {
+    font-size: 0.75rem;
+    color: rgba(255,255,255,0.5);
+}
+
+/* =========================================
+   9. SECCIÓN 5: REPRODUCTOR GÓTICO
+   ========================================= */
+.gothic-player {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.vinyl-container {
+    margin-bottom: 25px;
+    padding: 5px;
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 50%;
+    box-shadow: 0 0 30px rgba(0,0,0,0.6);
+}
+
+.dark-vinyl {
+    width: 130px;
+    height: 130px;
+    border-radius: 50%;
+    /* Efecto de vinilo realista */
+    background: repeating-radial-gradient(
+        #111, 
+        #111 10%, 
+        #222 15%
+    );
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* Animación de giro */
+    animation: spin 5s linear infinite;
+    animation-play-state: paused;
+}
+
+/* Girar solo cuando el modal está activo (simulando que suena) */
+.modal-card.active-card .dark-vinyl {
+    animation-play-state: running;
+}
+
+@keyframes spin {
+    100% { transform: rotate(360deg); }
+}
+
+.vinyl-center {
+    width: 45px;
+    height: 45px;
+    background: var(--popup-color);
+    border-radius: 50%;
+    border: 4px solid #000;
+}
+
+.gothic-info {
+    margin-bottom: 25px;
+}
+
+.goth-text {
+    font-family: 'Cinzel Decorative', cursive;
+    font-size: 1.3rem;
+    color: #fff;
+    margin-bottom: 5px;
+}
+
+.goth-subtext {
+    font-size: 0.8rem;
+    color: #888;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+.gothic-controls {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+}
+
+.goth-btn {
+    background: none;
+    border: 1px solid rgba(255,255,255,0.2);
+    color: #fff;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: 0.3s;
+    font-size: 1rem;
+}
+
+.goth-btn:hover {
+    border-color: var(--popup-color);
+    color: var(--popup-color);
+    box-shadow: 0 0 10px var(--popup-color);
+}
+
+.goth-btn.main {
+    width: 60px;
+    height: 60px;
+    font-size: 1.5rem;
+    background: rgba(255,255,255,0.05);
+}
+
+/* =========================================
+   10. RESPONSIVE (CELULAR)
+   ========================================= */
+@media (max-width: 768px) {
+    .gallery-container {
+        flex-direction: column;
+    }
+    .main-title {
+        font-size: 3rem;
+    }
+    .gallery-item {
+        border-right: none;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    .modal-card {
+        width: 85%;
+        padding: 25px;
+    }
+    .card-3d {
+        max-width: 220px;
+    }
+}
+
+/* =========================================
+   NUEVO REPRODUCTOR: ULTIMATE GOTHIC
+   ========================================= */
+
+   .goth-ultimate-player {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    padding-top: 10px;
+}
+
+/* 1. DISCO Y AURA */
+.disk-wrapper {
+    position: relative;
+    width: 140px;
+    height: 140px;
+    margin-bottom: 25px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* El brillo detrás del disco */
+.aura-pulse {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: radial-gradient(circle, var(--popup-color) 0%, transparent 70%);
+    opacity: 0.2;
+    filter: blur(15px);
+    /* Animación de latido */
+    animation: pulseGlow 2s infinite alternate;
+}
+
+@keyframes pulseGlow {
+    from { transform: scale(0.9); opacity: 0.1; }
+    to { transform: scale(1.2); opacity: 0.4; }
+}
+
+.vinyl-disk {
+    width: 130px;
+    height: 130px;
+    border-radius: 50%;
+    background: repeating-radial-gradient(#0a0a0a, #0a0a0a 10%, #1a1a1a 15%);
+    border: 2px solid rgba(255,255,255,0.1);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    display: flex; justify-content: center; align-items: center;
+    /* Girar */
+    animation: spinVinyl 6s linear infinite;
+    animation-play-state: paused; /* Pausado por defecto */
+}
+/* Girar cuando está activo */
+.modal-card.active-card .vinyl-disk { animation-play-state: running; }
+
+@keyframes spinVinyl { 100% { transform: rotate(360deg); } }
+
+.vinyl-cover-art {
+    width: 45px; height: 45px;
+    border-radius: 50%;
+    background: var(--popup-color); /* Color dinámico del centro */
+    border: 3px solid #000;
+    box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+}
+
+/* 2. VISUALIZADOR DE ESPECTRO (ECUALIZADOR) */
+.spectrum-visualizer {
+    display: flex;
+    align-items: flex-end;
+    gap: 4px;
+    height: 30px;
+    margin-bottom: 20px;
+}
+
+.bar {
+    width: 4px;
+    background: var(--popup-color);
+    border-radius: 2px;
+    box-shadow: 0 0 5px var(--popup-color);
+    animation: equalizer 1s ease-in-out infinite;
+}
+
+/* Animación aleatoria para cada barra */
+.bar:nth-child(1) { height: 10px; animation-duration: 0.8s; }
+.bar:nth-child(2) { height: 20px; animation-duration: 1.1s; }
+.bar:nth-child(3) { height: 15px; animation-duration: 0.9s; }
+.bar:nth-child(4) { height: 25px; animation-duration: 1.2s; }
+.bar:nth-child(5) { height: 30px; animation-duration: 0.7s; }
+.bar:nth-child(6) { height: 20px; animation-duration: 1.0s; }
+.bar:nth-child(7) { height: 15px; animation-duration: 1.3s; }
+.bar:nth-child(8) { height: 10px; animation-duration: 0.9s; }
+.bar:nth-child(9) { height: 5px; animation-duration: 0.6s; }
+.bar:nth-child(10) { height: 12px; animation-duration: 1.1s; }
+
+@keyframes equalizer {
+    0%, 100% { height: 5px; opacity: 0.5; }
+    50% { height: 100%; opacity: 1; }
+}
+
+/* 3. TEXTOS */
+.track-details-goth { margin-bottom: 20px; }
+.track-details-goth h3 {
+    font-family: 'Cinzel Decorative', cursive;
+    font-size: 1.4rem; color: #fff; margin-bottom: 5px;
+    text-shadow: 0 0 10px rgba(0,0,0,0.5);
+}
+.track-details-goth p {
+    font-size: 0.8rem; color: #888; letter-spacing: 2px; text-transform: uppercase;
+}
+
+/* 4. BARRA DE PROGRESO (VISUAL) */
+.progress-bar-container {
+    width: 80%;
+    height: 4px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 2px;
+    margin-bottom: 25px;
+    overflow: hidden;
+}
+.progress-fill {
+    width: 40%; /* Valor fijo visual */
+    height: 100%;
+    background: var(--popup-color);
+    box-shadow: 0 0 10px var(--popup-color);
+    animation: progressMove 30s linear infinite; /* Simula avance */
+}
+@keyframes progressMove {
+    0% { width: 0%; } 100% { width: 100%; }
+}
+
+/* 5. CONTROLES FLOTANTES */
+.controls-ultimate {
+    display: flex; align-items: center; gap: 25px;
+}
+
+.ctrl-btn {
+    background: none; border: none; color: #fff; cursor: pointer; transition: 0.3s;
+}
+
+.ctrl-btn.small {
+    font-size: 1.2rem; color: #aaa;
+}
+.ctrl-btn.small:hover { color: #fff; transform: scale(1.1); }
+
+.ctrl-btn.main-orb {
+    width: 60px; height: 60px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.2);
+    font-size: 1.5rem;
+    display: flex; justify-content: center; align-items: center;
+    box-shadow: 0 0 15px rgba(0,0,0,0.5);
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.ctrl-btn.main-orb:hover {
+    background: var(--popup-color);
+    border-color: var(--popup-color);
+    color: #000;
+    box-shadow: 0 0 25px var(--popup-color);
+    transform: scale(1.1);
+}
